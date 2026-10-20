@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Netflix Tracker",
+  "version": "1.0.0",
+  "description": "Netflix oynatıcısından izleme bilgisini okur ve yerel Flask API'ye gönderir.",
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "host_permissions": ["http://localhost:5000/*"]
+}
