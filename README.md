@@ -1,16 +1,16 @@
 # Netflix Tracker
 
-Film ve dizi izleme listenizi yerel olarak tutan bir Flask uygulaması. İsterseniz Chrome eklentisi, Netflix oynatıcısında ilerleme %88’e geldiğinde kaydı otomatik ekler.
+A Flask app that keeps your movie and TV watch list locally. An optional Chrome extension can add a record automatically when Netflix playback reaches 88%.
 
-## Özellikler
+## Features
 
-- Tailwind CSS arayüzü ile başlık ekleme ve listeleme
-- SQLite veritabanı (`netflix_tracker.db`)
-- `POST /api/add` ve `GET /api/titles` uç noktaları
-- Manifest v3 Chrome eklentisi (`https://www.netflix.com/*`)
-- TMDB API anahtarı `.env` üzerinden okunur (`TMDB_API_KEY`)
+- Add and list titles in a Tailwind CSS UI
+- SQLite database (`netflix_tracker.db`)
+- `POST /api/add` and `GET /api/titles` endpoints
+- Manifest v3 Chrome extension (`https://www.netflix.com/*`)
+- TMDB API key loaded from `.env` (`TMDB_API_KEY`)
 
-## Proje yapısı
+## Project structure
 
 ```
 netflix-tracker/
@@ -21,10 +21,10 @@ netflix-tracker/
 │   ├── manifest.json
 │   └── content.js
 ├── .gitignore
-└── .env                 # yerel, git'e eklenmez
+└── .env                 # local only, not committed
 ```
 
-## Kurulum
+## Setup
 
 ```bash
 python3 -m venv .venv
@@ -32,36 +32,36 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Proje kökünde `.env` oluşturun:
+Create a `.env` file in the project root:
 
 ```
 TMDB_API_KEY=your_key_here
 ```
 
-Sunucuyu başlatın:
+Start the server:
 
 ```bash
 python app.py
 ```
 
-Arayüz: [http://127.0.0.1:5000](http://127.0.0.1:5000)
+UI: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ## API
 
 ### `POST /api/add`
 
-JSON gövdesi:
+JSON body:
 
-| Alan     | Zorunlu | Açıklama                                      |
-|----------|---------|-----------------------------------------------|
-| `title`  | evet    | Film / dizi adı                               |
-| `status` | hayır   | `watchlist`, `watching` veya `completed`      |
-| `rating` | hayır   | 1–10                                          |
-| `notes`  | hayır   | serbest metin                                 |
-| `season` | hayır   | sezon numarası                                |
-| `episode`| hayır   | bölüm numarası                                |
+| Field     | Required | Description                              |
+|-----------|----------|------------------------------------------|
+| `title`   | yes      | Movie / show name                        |
+| `status`  | no       | `watchlist`, `watching`, or `completed`  |
+| `rating`  | no       | 1–10                                     |
+| `notes`   | no       | free text                                |
+| `season`  | no       | season number                            |
+| `episode` | no       | episode number                           |
 
-Örnek:
+Example:
 
 ```bash
 curl -X POST http://127.0.0.1:5000/api/add \
@@ -71,18 +71,18 @@ curl -X POST http://127.0.0.1:5000/api/add \
 
 ### `GET /api/titles`
 
-Kayıtlı başlıkları listeler.
+Lists saved titles.
 
-## Chrome eklentisi
+## Chrome extension
 
-1. Flask’ın `http://127.0.0.1:5000` üzerinde çalıştığından emin olun.
-2. Chrome’da `chrome://extensions` sayfasını açın.
-3. Geliştirici modunu açın.
-4. **Paketlenmemiş öğe yükle** ile `extension` klasörünü seçin.
-5. Netflix’te bir başlık oynatın. Video %88 tamamlanınca eklenti `/api/add` adresine `completed` kaydı gönderir.
+1. Make sure Flask is running at `http://127.0.0.1:5000`.
+2. Open `chrome://extensions` in Chrome.
+3. Enable Developer mode.
+4. Choose **Load unpacked** and select the `extension` folder.
+5. Play a title on Netflix. When the video reaches 88%, the extension posts a `completed` record to `/api/add`.
 
-Eklenti oynatıcıdaki `video` öğesini ve `data-uia="video-title"` alanını kullanır. Netflix arayüzü değişirse seçicilerin güncellenmesi gerekebilir.
+The extension uses the player `video` element and the `data-uia="video-title"` node. If Netflix changes its UI, the selectors may need an update.
 
-## Güvenlik
+## Security
 
-`.gitignore` şu dosyaları dışarıda bırakır: sanal ortamlar, `__pycache__`, SQLite veritabanı, `.env`, işletim sistemi ve editör klasörleri. API anahtarlarını koda yazmayın.
+`.gitignore` excludes virtualenvs, `__pycache__`, SQLite databases, `.env`, and OS/editor folders. Do not hardcode API keys.
