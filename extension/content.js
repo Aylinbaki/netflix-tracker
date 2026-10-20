@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/add";
+const API_URL = "http://127.0.0.1:5000/api/add";
 const COMPLETE_RATIO = 0.88;
 const sentKeys = new Set();
 

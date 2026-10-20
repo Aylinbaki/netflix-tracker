@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Netflix Tracker</title>
+    <!-- Font Awesome İkonları -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -16,159 +21,217 @@
         },
       };
     </script>
+    <style>
+      /* Glassmorphism ve Modern Efektler */
+      .glass-card {
+        background: rgba(24, 24, 27, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .glass-card:hover {
+        border-color: rgba(229, 9, 20, 0.4);
+        box-shadow: 0 8px 24px rgba(229, 9, 20, 0.15);
+      }
+    </style>
   </head>
-  <body class="min-h-screen bg-zinc-950 text-zinc-100">
-    <div class="mx-auto max-w-4xl px-4 py-10">
-      <header class="mb-8">
-        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-netflix">
-          Netflix Tracker
-        </p>
-        <h1 class="mt-2 text-3xl font-bold">İzleme listenizi yönetin</h1>
-        <p class="mt-2 text-zinc-400">
-          Film veya dizi ekleyin, durumunu takip edin ve puanlayın.
-        </p>
+  <body class="min-h-screen bg-[#141414] text-zinc-100 font-sans antialiased">
+    <div class="mx-auto max-w-5xl px-4 py-8">
+      
+      <!-- Navbar / Header -->
+      <header class="mb-8 flex items-center justify-between border-b border-zinc-800/80 pb-5">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.25em] text-netflix">
+            Automated Tracking
+          </p>
+          <h1 class="mt-1 text-3xl font-black tracking-tight">
+            <span class="text-netflix">NETFLIX</span> TRACKER
+          </h1>
+        </div>
+        <div class="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-4 py-1.5 text-xs text-zinc-400">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+          </span>
+          Eklenti Aktif
+        </div>
       </header>
 
-      <form
-        id="add-form"
-        class="mb-8 grid gap-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-6"
-      >
-        <div class="grid gap-4 md:grid-cols-2">
-          <label class="block">
-            <span class="mb-1 block text-sm text-zinc-300">Başlık</span>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              required
-              placeholder="Örn. Stranger Things"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 outline-none focus:border-netflix"
-            />
-          </label>
-          <label class="block">
-            <span class="mb-1 block text-sm text-zinc-300">Durum</span>
-            <select
-              id="status"
-              name="status"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 outline-none focus:border-netflix"
-            >
-              <option value="watchlist">İzleme listesi</option>
-              <option value="watching">İzleniyor</option>
-              <option value="completed">Tamamlandı</option>
-            </select>
-          </label>
-          <label class="block">
-            <span class="mb-1 block text-sm text-zinc-300">Puan (1-10)</span>
-            <input
-              id="rating"
-              name="rating"
-              type="number"
-              min="1"
-              max="10"
-              placeholder="Opsiyonel"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 outline-none focus:border-netflix"
-            />
-          </label>
-          <label class="block">
-            <span class="mb-1 block text-sm text-zinc-300">Not</span>
-            <input
-              id="notes"
-              name="notes"
-              type="text"
-              placeholder="Kısa bir not"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 outline-none focus:border-netflix"
-            />
-          </label>
+      <!-- Özet İstatistik Kartları (Stats Summary) -->
+      <section class="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="glass-card flex items-center gap-4 rounded-2xl p-5 transition-all duration-300">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-netflix/10 text-netflix">
+            <i class="fa-solid fa-film text-xl"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold tracking-tight" id="stat-total-shows">0</p>
+            <p class="text-xs font-medium text-zinc-400">Toplam Başlık</p>
+          </div>
         </div>
-        <button
-          type="submit"
-          class="rounded-lg bg-netflix px-4 py-2 font-semibold text-white hover:bg-red-600"
-        >
-          Listeye ekle
-        </button>
-        <p id="message" class="text-sm text-zinc-400"></p>
-      </form>
 
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">Kayıtlı başlıklar</h2>
-        <div id="titles" class="grid gap-3"></div>
+        <div class="glass-card flex items-center gap-4 rounded-2xl p-5 transition-all duration-300">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-netflix/10 text-netflix">
+            <i class="fa-solid fa-tv text-xl"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold tracking-tight" id="stat-total-episodes">0</p>
+            <p class="text-xs font-medium text-zinc-400">İzlenen Bölüm Sayısı</p>
+          </div>
+        </div>
+
+        <div class="glass-card flex items-center gap-4 rounded-2xl p-5 transition-all duration-300">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-netflix/10 text-netflix">
+            <i class="fa-solid fa-clock text-xl"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold tracking-tight" id="stat-last-activity">-</p>
+            <p class="text-xs font-medium text-zinc-400">Son İzleme Aktivitesi</p>
+          </div>
+        </div>
       </section>
+
+      <!-- İçerik Listesi (Grid Yapısı) -->
+      <section>
+        <div class="mb-5 flex items-center justify-between">
+          <h2 class="text-xl font-bold tracking-tight">Son İzlenen İçerikler</h2>
+          <span id="item-count" class="text-xs font-semibold text-zinc-500">0 kayıt</span>
+        </div>
+        
+        <div id="titles" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </section>
+
     </div>
 
     <script>
-      const form = document.getElementById("add-form");
       const titlesEl = document.getElementById("titles");
-      const messageEl = document.getElementById("message");
+      const statTotalShows = document.getElementById("stat-total-shows");
+      const statTotalEpisodes = document.getElementById("stat-total-episodes");
+      const statLastActivity = document.getElementById("stat-last-activity");
+      const itemCountEl = document.getElementById("item-count");
 
       const statusLabels = {
-        watchlist: "İzleme listesi",
+        watchlist: "İzleme Listesi",
         watching: "İzleniyor",
         completed: "Tamamlandı",
       };
 
-      async function loadTitles() {
-        const response = await fetch("/api/titles");
-        const titles = await response.json();
+      // Silme İşlemi (API İle)
+      async function deleteTitle(id) {
+        if (!confirm("Bu kaydı veritabanından silmek istediğinize emin misiniz?")) return;
 
-        if (!titles.length) {
-          titlesEl.innerHTML =
-            '<p class="rounded-xl border border-dashed border-zinc-800 p-6 text-zinc-500">Henüz kayıt yok.</p>';
-          return;
+        try {
+          const response = await fetch(`/api/delete/${id}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            await loadTitles();
+          } else {
+            alert("Silme işlemi gerçekleştirilemedi.");
+          }
+        } catch (err) {
+          console.error("Silme hatası:", err);
         }
-
-        titlesEl.innerHTML = titles
-          .map(
-            (item) => `
-            <article class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="text-lg font-semibold">${item.title}</h3>
-                  <p class="text-sm text-zinc-400">
-                    ${statusLabels[item.status] || item.status}${
-                      item.season && item.episode
-                        ? ` · S${item.season}:E${item.episode}`
-                        : ""
-                    }
-                  </p>
-                </div>
-                <span class="rounded-full bg-zinc-800 px-3 py-1 text-sm">
-                  ${item.rating ? item.rating + "/10" : "Puansız"}
-                </span>
-              </div>
-              ${item.notes ? `<p class="mt-2 text-sm text-zinc-300">${item.notes}</p>` : ""}
-            </article>
-          `
-          )
-          .join("");
       }
 
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        messageEl.textContent = "";
+      // Verileri Yükleme ve İstatistik Hesaplama
+      async function loadTitles() {
+        try {
+          const response = await fetch("/api/titles");
+          const titles = await response.json();
 
-        const payload = {
-          title: document.getElementById("title").value,
-          status: document.getElementById("status").value,
-          rating: document.getElementById("rating").value,
-          notes: document.getElementById("notes").value,
-        };
+          // İstatistikleri Hesapla ve Güncelle
+          statTotalShows.textContent = titles.length;
+          itemCountEl.textContent = `${titles.length} kayıt`;
 
-        const response = await fetch("/api/add", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+          const episodeCount = titles.reduce((acc, curr) => acc + (curr.episode ? 1 : 0), 0);
+          statTotalEpisodes.textContent = episodeCount;
 
-        const data = await response.json();
-        if (!response.ok) {
-          messageEl.textContent = data.error || "Kayıt eklenemedi.";
-          return;
+          if (titles.length > 0 && titles[0].created_at) {
+            const date = new Date(titles[0].created_at);
+            statLastActivity.textContent = date.toLocaleDateString("tr-TR", {
+              day: "numeric",
+              month: "short"
+            });
+          } else {
+            statLastActivity.textContent = "Henüz Yok";
+          }
+
+          // Liste Boşsa Gösterilecek Mesaj
+          if (!titles.length) {
+            titlesEl.innerHTML = `
+              <div class="col-span-full rounded-2xl border border-dashed border-zinc-800/80 p-12 text-center">
+                <i class="fa-solid fa-compact-disc mb-3 text-3xl text-zinc-600"></i>
+                <p class="text-sm font-medium text-zinc-400">Henüz kaydedilmiş bir izleme geçmişi yok.</p>
+                <p class="mt-1 text-xs text-zinc-600">Netflix'ten bir şeyler izlediğinizde verileriniz buraya otomatik düşecektir.</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Dizi / Film Kartlarını Bas
+          titlesEl.innerHTML = titles
+            .map(
+              (item) => `
+              <article class="glass-card relative flex flex-col justify-between rounded-2xl p-5 transition-all duration-300">
+                <div>
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-bold text-zinc-100 text-base leading-snug">${item.title}</h3>
+                    ${
+                      item.rating
+                        ? `<span class="inline-flex items-center gap-1 rounded-full bg-netflix/15 px-2.5 py-0.5 text-xs font-bold text-netflix border border-netflix/30">
+                            <i class="fa-solid fa-star text-[10px]"></i> ${item.rating}/10
+                           </span>`
+                        : ""
+                    }
+                  </div>
+
+                  <div class="mt-3 flex flex-wrap items-center gap-1.5">
+                    <span class="rounded-md bg-zinc-800/80 px-2 py-0.5 text-[11px] font-medium text-zinc-300 border border-zinc-700/40">
+                      ${statusLabels[item.status] || item.status}
+                    </span>
+                    ${
+                      item.season || item.episode
+                        ? `<span class="rounded-md bg-netflix/10 px-2 py-0.5 text-[11px] font-semibold text-netflix border border-netflix/20">
+                            ${item.season ? `S${item.season}` : ""}${item.season && item.episode ? " : " : ""}${item.episode ? `E${item.episode}` : ""}
+                           </span>`
+                        : ""
+                    }
+                  </div>
+
+                  ${
+                    item.notes
+                      ? `<p class="mt-3 text-xs leading-relaxed text-zinc-400 bg-zinc-950/40 p-2.5 rounded-lg border border-zinc-800/40">${item.notes}</p>`
+                      : ""
+                  }
+                </div>
+
+                <div class="mt-5 flex items-center justify-between border-t border-zinc-800/60 pt-3">
+                  <span class="text-[11px] text-zinc-500">
+                    <i class="fa-regular fa-calendar mr-1"></i>
+                    ${
+                      item.created_at
+                        ? new Date(item.created_at).toLocaleDateString("tr-TR")
+                        : "Bilinmiyor"
+                    }
+                  </span>
+                  <button
+                    onclick="deleteTitle(${item.id})"
+                    class="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium text-zinc-400 hover:bg-netflix/15 hover:text-netflix transition-colors duration-200"
+                    title="Kaydı Sil"
+                  >
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                    <span>Sil</span>
+                  </button>
+                </div>
+              </article>
+            `
+            )
+            .join("");
+        } catch (err) {
+          console.error("Veriler çekilemedi:", err);
         }
-
-        form.reset();
-        messageEl.textContent = "Başlık eklendi.";
-        await loadTitles();
-      });
+      }
 
       loadTitles();
     </script>

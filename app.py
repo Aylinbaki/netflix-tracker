@@ -3,18 +3,16 @@ import sqlite3
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, g, jsonify, render_template, request
+from flask import Flask, g, request, jsonify, render_template
 from flask_cors import CORS
 
 load_dotenv()
-
-TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE = BASE_DIR / "netflix_tracker.db"
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 def get_db():
@@ -127,7 +125,18 @@ def add_title():
     return jsonify(dict(row)), 201
 
 
-init_db()
+@app.route("/api/delete/<int:title_id>", methods=["DELETE"])
+def delete_title(title_id):
+    db = get_db()
+    cursor = db.execute("DELETE FROM titles WHERE id = ?", (title_id,))
+    db.commit()
+
+    if cursor.rowcount == 0:
+        return jsonify({"error": "Kayıt bulunamadı"}), 404
+
+    return jsonify({"message": "Kayıt başarıyla silindi"}), 200
+
 
 if __name__ == "__main__":
+    init_db()
     app.run(debug=True, host="127.0.0.1", port=5000)
