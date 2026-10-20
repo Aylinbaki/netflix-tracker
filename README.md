@@ -57,10 +57,12 @@ python app.py
 UI: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ## API
-### `GET /api/titles`
-### `POST /api/add`
-### `POST /api/rate/<id>`
-### `DELETE /api/delete/<id>`
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/titles` | Fetch all logged titles |
+| `POST` | `/api/add` | Add a new watch log record |
+| `POST` | `/api/rate/<id>` | Update star rating (1–5) |
+| `DELETE` | `/api/delete/<id>` | Permanently delete a record |
 
 Example (POST/api/add):
 
