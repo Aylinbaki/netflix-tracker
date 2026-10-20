@@ -4,6 +4,7 @@ A modern, automated Flask web application and Chrome extension to locally track,
 
 An optional Chrome extension automatically logs a record to your database when Netflix video playback reaches 88%.
 
+![Netflix Tracker UI Dashboard](image/dashboard.png)
 ## Features
 
 - **Automated Tracking:** Chrome extension automatically records watched shows/movies at 88% playback.
