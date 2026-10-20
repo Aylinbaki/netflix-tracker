@@ -136,6 +136,23 @@ def delete_title(title_id):
 
     return jsonify({"message": "Kayıt başarıyla silindi"}), 200
 
+@app.route("/api/rate/<int:title_id>", methods=["POST"])
+def rate_title(title_id):
+    data = request.get_json(silent=True) or {}
+    rating = data.get("rating")
+    
+    if rating is not None:
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                return jsonify({"error": "Rating 1 ile 5 arasında olmalıdır"}), 400
+        except ValueError:
+            return jsonify({"error": "Gecersiz rating"}), 400
+
+    db = get_db()
+    db.execute("UPDATE titles SET rating = ? WHERE id = ?", (rating, title_id))
+    db.commit()
+    return jsonify({"message": "Puan başarıyla güncellendi", "rating": rating}), 200
 
 if __name__ == "__main__":
     init_db()

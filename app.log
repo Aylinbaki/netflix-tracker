@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/aylinbaki/Desktop/BELGE/netflix-tracker/app.py", line 7, in <module>
+    from flask_cors import CORS
+ModuleNotFoundError: No module named 'flask_cors'
