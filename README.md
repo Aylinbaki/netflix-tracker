@@ -1,14 +1,18 @@
 # Netflix Tracker
 
-A Flask app that keeps your movie and TV watch list locally. An optional Chrome extension can add a record automatically when Netflix playback reaches 88%.
+A modern, automated Flask web application and Chrome extension to locally track, categorize, and rate your Netflix watch history. 
+
+An optional Chrome extension automatically logs a record to your database when Netflix video playback reaches 88%.
 
 ## Features
 
-- Add and list titles in a Tailwind CSS UI
-- SQLite database (`netflix_tracker.db`)
-- `POST /api/add` and `GET /api/titles` endpoints
-- Manifest v3 Chrome extension (`https://www.netflix.com/*`)
-- TMDB API key loaded from `.env` (`TMDB_API_KEY`)
+- **Automated Tracking:** Chrome extension automatically records watched shows/movies at 88% playback.
+- **Glassmorphism UI:** Modern dark mode interface built with Tailwind CSS and Font Awesome icons.
+- **Stats Summary Dashboard:** Real-time counters for unique titles tracked, total episodes watched, and last activity date.
+- **Smart Categorization:** Automatically distinguishes between TV Series and Movies (using runtime thresholds $\ge 90$ mins or season/episode data).
+- **Interactive Rating:** Rate any watched content directly from the UI on a 1–5 star scale.
+- **Manual Management:** Delete any record directly from the web interface.
+- **SQLite Database:** Zero-config local persistence (`netflix_tracker.db`).
 
 ## Project structure
 
@@ -21,25 +25,31 @@ netflix-tracker/
 │   ├── manifest.json
 │   └── content.js
 ├── .gitignore
-└── .env                 # local only, not committed
+└── .env                 # Local environment file (TMDB API key, etc.)
 ```
 
 ## Setup
 
+1-Clone the repository
+```bash
+git clone [https://github.com/Aylinbaki/netflix-tracker.git](https://github.com/Aylinbaki/netflix-tracker.git)
+cd netflix-tracker
+```
+2-Create and activate a virtual environment:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
+3-Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
-
+4-Environment Variables:
 Create a `.env` file in the project root:
-
+```bash
+TMDB_API_KEY=your_tmdb_api_key_here
 ```
-TMDB_API_KEY=your_key_here
-```
-
-Start the server:
-
+5-Run the Flask server:
 ```bash
 python app.py
 ```
@@ -47,29 +57,22 @@ python app.py
 UI: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ## API
-
-### `POST /api/add`
-
-JSON body:
-
-| Field     | Required | Description                              |
-|-----------|----------|------------------------------------------|
-| `title`   | yes      | Movie / show name                        |
-| `status`  | no       | `watchlist`, `watching`, or `completed`  |
-| `rating`  | no       | 1–10                                     |
-| `notes`   | no       | free text                                |
-| `season`  | no       | season number                            |
-| `episode` | no       | episode number                           |
-
-Example:
-
-```bash
-curl -X POST http://127.0.0.1:5000/api/add \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Dark","status":"completed","season":1,"episode":8}'
-```
-
 ### `GET /api/titles`
+### `POST /api/add`
+### `POST /api/rate/<id>`
+### `DELETE /api/delete/<id>`
+
+Example (POST/api/add):
+
+```json
+{
+  "title": "Dark",
+  "status": "completed",
+  "season": 1,
+  "episode": 8,
+  "notes": "S1:E8 Episode 8"
+}
+```
 
 Lists saved titles.
 
@@ -79,10 +82,11 @@ Lists saved titles.
 2. Open `chrome://extensions` in Chrome.
 3. Enable Developer mode.
 4. Choose **Load unpacked** and select the `extension` folder.
-5. Play a title on Netflix. When the video reaches 88%, the extension posts a `completed` record to `/api/add`.
+5. Stream any show or movie on Netflix. Once playback reaches 88%, the extension automatically posts the log to `/api/add` .
 
 The extension uses the player `video` element and the `data-uia="video-title"` node. If Netflix changes its UI, the selectors may need an update.
 
 ## Security
 
-`.gitignore` excludes virtualenvs, `__pycache__`, SQLite databases, `.env`, and OS/editor folders. Do not hardcode API keys.
+`.gitignore` excludes virtual environments `(.venv)`, SQLite database files `(*.db)`, `.env`, and temporary system files.
+Do not commit real API keys or personal database entries to public repositories.
